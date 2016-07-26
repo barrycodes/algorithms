@@ -1,1 +1,6 @@
 C:\Users\master\Documents\GitHub\algorithms\BowlingCalculator\BowlingCalculator\bin\Debug\BowlingCalculator.exe.config
+C:\Users\master\Documents\GitHub\algorithms\BowlingCalculator\BowlingCalculator\obj\Debug\BowlingCalculator.csprojResolveAssemblyReference.cache
+C:\Users\master\Documents\GitHub\algorithms\BowlingCalculator\BowlingCalculator\bin\Debug\BowlingCalculator.exe
+C:\Users\master\Documents\GitHub\algorithms\BowlingCalculator\BowlingCalculator\bin\Debug\BowlingCalculator.pdb
+C:\Users\master\Documents\GitHub\algorithms\BowlingCalculator\BowlingCalculator\obj\Debug\BowlingCalculator.exe
+C:\Users\master\Documents\GitHub\algorithms\BowlingCalculator\BowlingCalculator\obj\Debug\BowlingCalculator.pdb
