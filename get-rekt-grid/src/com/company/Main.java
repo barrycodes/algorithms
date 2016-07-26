@@ -4,125 +4,98 @@ import java.util.Scanner;
 
 public class Main {
 
-    static String word = "abcde";
-
-    static char[][] forwardGrid= createForwardGrid(word);
-    static char[][] backwardGrid= createBackwardGrid(word);
-
     public static void main(String[] args) {
+        gridExercise();
+    }
 
-        char[][] grid = populateGrid(word,4,3);
+    private static void gridExercise() {
+        boolean keepAlive = true;
+        while (keepAlive) {
+            try {
+                System.out.println("ENTER WORD:");
+                String input = new Scanner(System.in).nextLine();
+                System.out.println("ENTER WIDTH:");
+                int width = new Scanner(System.in).nextInt();
+                System.out.println("ENTER HEIGHT:");
+                int height = new Scanner(System.in).nextInt();
+                doGridExercise(input, width, height);
+            } catch (Exception ex) {
+                keepAlive = false;
+            }
+        }
+    }
 
+    private static void setGridLetter(char[][] grid, int x, int y, char c) {
+        grid[y][x] = c;
+    }
+
+    private static void writeWord(char[][] grid, String word, int x, int y, boolean horizontal, boolean forward) {
+        StringBuilder wordBuilder = new StringBuilder(word);
+        if (!forward)
+            wordBuilder.reverse();
+        for (char c : wordBuilder.toString().toCharArray()) {
+            setGridLetter(grid, x, y, c);
+            if (horizontal) ++x;
+            else ++y;
+        }
+    }
+
+    private static void writeAll(char[][] grid, String word, int width, int height) {
+        boolean forward = (width % 2 == 1);
+        writeHorizontals(grid, word, width, height, forward);
+        writeVerticals(grid, word, width, height, forward);
+    }
+
+    private static void writeHorizontals(char[][] grid, String word, int width, int height, boolean forward) {
+        for (int y = 0; y < grid.length; y += (word.length() - 1)) {
+            boolean rowForward = forward;
+            for (int x = 0; x < (grid[0].length - 1); x += (word.length() - 1)) {
+                writeWord(grid, word, x, y, true, rowForward);
+                rowForward = !rowForward;
+            }
+            forward = !forward;
+        }
+    }
+
+    private static void writeVerticals(char[][] grid, String word, int width, int height, boolean forward) {
+        for (int x = 0; x < grid[0].length; x += (word.length() - 1)) {
+            boolean colForward = forward;
+            for (int y = 0; y < (grid.length - 1); y += (word.length() - 1)) {
+                writeWord(grid, word, x, y, false, colForward);
+                colForward = !colForward;
+            }
+            forward = !forward;
+        }
+    }
+
+    private static char[][] initializeGrid(char[][] grid) {
+        for (char[] row : grid)
+            for (int i = 0; i < row.length; ++i)
+                row[i] = ' ';
+        return grid;
+    }
+
+    private static void doGridExercise(String word, int width, int height) {
+        char[][] grid = makeGrid(word, width, height);
+        writeAll(grid, word, width, height);
         printGrid(grid);
     }
 
-    public static char[][] createForwardGrid(String word){
-        char[][] grid= new char[word.length()][word.length()];
-
-        //populate top line forwards
-        populateWordForwards(word, grid[0]);
-
-        //Fill in middle section by populating it with the middle letters. The left is filled in forwards and the right is filled in
-        //backwards
-        for(int heightIndex=1; heightIndex<word.length()-1;++heightIndex){
-            grid[heightIndex][0]=word.charAt(heightIndex);
-            grid[heightIndex][word.length()-1]=word.charAt(word.length()-1-heightIndex);
-        }
-
-        //populate bottom line backwards
-        populateWordBackwards(word, grid[word.length()-1]);
-
-        return grid;
+    private static char[][] makeGrid(String word, int width, int height) {
+        return
+            initializeGrid(
+                new char
+                    [word.length() + (height-1) * (word.length() - 1)]
+                    [word.length() + (width-1) * (word.length() - 1)]);
     }
 
-    public static char[][] createBackwardGrid(String word){
-        char[][] grid= new char[word.length()][word.length()];
-
-        //populate top line backwards
-        populateWordBackwards(word, grid[0]);
-
-        //Fill in middle section by populating it with the middle letters. The left is filled in backwards and the right is filled in
-        //forwards
-        for(int heightIndex=1; heightIndex<word.length()-1;++heightIndex){
-            grid[heightIndex][0]=word.charAt(word.length()-1-heightIndex);
-            grid[heightIndex][word.length()-1]=word.charAt(heightIndex);
+    private static void printGrid(char[][] grid) {
+        StringBuilder result = new StringBuilder();
+        for (char[] row : grid) {
+            for (char c : row)
+                result.append(c + " ");
+            result.append("\r\n");
         }
-
-        //populate bottom line forwards
-        populateWordForwards(word, grid[word.length()-1]);
-
-        return grid;
-    }
-
-    public static char[][] populateGrid(String word, int widthRepetitions, int heightRepetitions) {
-        int widthLength = findArrayLength(word, widthRepetitions);
-        int heightLength = findArrayLength(word, heightRepetitions);
-
-        char[][] grid = new char[heightLength][widthLength];
-
-        //If the width repetitions is even, we start by printing the word backwards
-        boolean heightIsBackwards = widthRepetitions % 2 == 0;
-
-        for (int heightIndex = 0; heightIndex < heightRepetitions; ++heightIndex) {
-            boolean widthIsBackwards = heightIsBackwards;
-            for (int widthIndex = 0; widthIndex < widthRepetitions; ++widthIndex) {
-                if (widthIsBackwards) {
-                    populateGridBackwards(grid, heightIndex, widthIndex);
-                } else {
-                    populateGridForwards(grid, heightIndex, widthIndex);
-                }
-
-                widthIsBackwards=!widthIsBackwards;
-            }
-            heightIsBackwards = !heightIsBackwards;
-        }
-        return grid;
-    }
-
-    public static void populateGridForwards(char[][] grid, int heightIndex, int widthIndex){
-        heightIndex*=(word.length()-1);
-        widthIndex*=(word.length()-1);
-
-        for(int curHeight=0;curHeight<word.length();++curHeight){
-            for(int curWidth=0; curWidth<word.length();++curWidth){
-                grid[curHeight+heightIndex][curWidth+widthIndex]=forwardGrid[curHeight][curWidth];
-            }
-        }
-    }
-
-    public static void populateGridBackwards(char[][] grid, int heightIndex, int widthIndex){
-        heightIndex*=(word.length()-1);
-        widthIndex*=(word.length()-1);
-
-        for(int curHeight=0;curHeight<word.length();++curHeight){
-            for(int curWidth=0; curWidth<word.length();++curWidth){
-                grid[curHeight+heightIndex][curWidth+widthIndex]=backwardGrid[curHeight][curWidth];
-            }
-        }
-    }
-
-    public static int findArrayLength(String word, int repetitions) {
-        return word.length() + (repetitions - 1) * (word.length() - 1);
-    }
-
-    public static void populateWordBackwards(String word, char[] gridRow) {
-        for(int index=0;index<word.length();++index){
-            gridRow[index]=word.charAt(word.length()-1-index);
-        }
-    }
-
-    public static void populateWordForwards(String word, char[] gridRow) {
-        for(int index=0;index<word.length();++index){
-            gridRow[index]=word.charAt(index);
-        }
-    }
-
-    public static void printGrid(char[][] grid) {
-        for (int height = 0; height < grid.length; ++height) {
-            for (int width = 0; width < grid[height].length; ++width) {
-                System.out.print(grid[height][width] + " ");
-            }
-            System.out.println();
-        }
+        System.out.println(result);
     }
 }
