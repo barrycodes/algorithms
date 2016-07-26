@@ -83,10 +83,10 @@ public class Main {
 
     private static char[][] makeGrid(String word, int width, int height) {
         return
-                initializeGrid(
-                        new char
-                                [word.length() + (height-1) * (word.length() - 1)]
-                                [word.length() + (width-1) * (word.length() - 1)]);
+            initializeGrid(
+                new char
+                    [word.length() + (height-1) * (word.length() - 1)]
+                    [word.length() + (width-1) * (word.length() - 1)]);
     }
 
     private static void printGrid(char[][] grid) {
